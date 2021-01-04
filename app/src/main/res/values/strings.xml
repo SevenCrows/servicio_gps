@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ServicioReinicio</string>
+    <string name="txt_kilometraje">0.0 km/h</string>
+</resources>
