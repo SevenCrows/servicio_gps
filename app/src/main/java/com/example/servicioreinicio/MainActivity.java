@@ -1,17 +1,22 @@
 package com.example.servicioreinicio;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.servicioreinicio.trasversal.ConstanteExtras;
+import com.example.servicioreinicio.trasversal.ConstanteIntent;
 import com.example.servicioreinicio.trasversal.ConstantesAccion;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,19 +31,46 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv_kilometraje = findViewById(R.id.tv_kilometraje);
-
-        //iniciar Programa;
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConstantesAccion.ACCION_INTENT);
         LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
         bm.registerReceiver(mBroadcastReceiver, filter);
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        BroadcastReceiverDeReinicio.programarTrabajo(getApplicationContext());
+        iniciarPrograma();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == ConstanteIntent.CODIGO_INTENT_PERMISOS_APLICACION) {
+            boolean permisosGarantizados = true;
+
+            for (int validacion : grantResults)
+                if (validacion != PackageManager.PERMISSION_GRANTED) permisosGarantizados = false;
+
+            if (permisosGarantizados) {
+                iniciarPrograma();
+            } else {
+                this.finish();
+            }
+        }
+    }
+    //endregion
+
+    //region Propios
+    private void iniciarPrograma() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, getResources().getStringArray(R.array.permisos_aplicacion), ConstanteIntent.CODIGO_INTENT_PERMISOS_APLICACION);
+        } else {
+            //iniciar Programa;
+            BroadcastReceiverDeReinicio.programarTrabajo(getApplicationContext());
+        }
     }
     //endregion
 
@@ -49,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             if (intent.getAction().equals(ConstantesAccion.ACCION_INTENT)) {
                 final String param = intent.getStringExtra(ConstanteExtras.EXTRA_LOCALIZACION);
 
-                tv_kilometraje.setText(param);
+                tv_kilometraje.setText(String.format("%s km/h", param));
             }
         }
     };

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="permisos_aplicacion">
+        <item>android.permission.ACCESS_FINE_LOCATION</item>
+        <item>android.permission.ACCESS_COARSE_LOCATION</item>
+        <item>android.permission.READ_EXTERNAL_STORAGE</item>
+        <item>android.permission.WRITE_EXTERNAL_STORAGE</item>
+        <item>android.permission.READ_PHONE_STATE</item>
+        <item>android.permission.ACCESS_BACKGROUND_LOCATION</item>
+    </string-array>
+</resources>

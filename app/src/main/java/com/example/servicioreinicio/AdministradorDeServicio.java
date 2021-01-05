@@ -25,7 +25,11 @@ public class AdministradorDeServicio {
 
         //Se valida las versiones de android al cual va dirigido el apk
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //TODO: Genera conflictos despues de 5 segundos por ARN
             context.startForegroundService(intentServicio);
+
+            //context.bindService(context.startService(intentServicio),)<
+
         } else {
             context.startService(intentServicio);
         }
