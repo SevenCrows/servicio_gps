@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //iniciar Programa;
             RestartBroadcastReceiver.programarTrabajo(getApplicationContext());
+
         }
     }
     //endregion
