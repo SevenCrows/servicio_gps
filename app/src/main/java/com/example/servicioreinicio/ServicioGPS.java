@@ -121,7 +121,6 @@ public class ServicioGPS extends Service implements LocationListener {
                         crearArchivoVelocidad(locacion_actual);
                     }
                 }
-
                 handler.postDelayed(this, 15000); //Cada segundo.
             }
         };
@@ -177,6 +176,13 @@ public class ServicioGPS extends Service implements LocationListener {
         if (locacion_previa == null) {
             locacion_previa = location;
             crearArchivoVelocidad(location);
+        }
+
+        if (locacion_actual != null && locacion_previa != null) {
+            if (locacion_previa.distanceTo(locacion_actual) >= 50) {
+                locacion_previa = locacion_actual;
+                crearArchivoVelocidad(locacion_actual);
+            }
         }
 
         locacion_actual = location;
