@@ -1,11 +1,11 @@
-package com.example.servicioreinicio;
+package com.example.utilitario.gps;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
-public class AdministradorDeServicio {
+public class AdminServicio {
 
     //region Atributos
     private static final String TAG = "AdministradorDeServicio";
@@ -13,11 +13,12 @@ public class AdministradorDeServicio {
     //endregion
 
     //region Constructor
-    public AdministradorDeServicio(){}
+    public AdminServicio() {
+    }
     //endregion
 
     //region Propios
-    public void iniciarServicio(Context context){
+    public void iniciarServicio(Context context) {
         if (context == null) {
             return;
         }

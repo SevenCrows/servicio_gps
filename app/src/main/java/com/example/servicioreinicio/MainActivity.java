@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -15,9 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.example.servicioreinicio.trasversal.ConstanteExtras;
-import com.example.servicioreinicio.trasversal.ConstanteIntent;
-import com.example.servicioreinicio.trasversal.ConstantesAccion;
+import com.example.utilitario.gps.RestartBroadcastReceiver;
+import com.example.utilitario.gps.trasversal.ConstantesAccion;
+import com.example.utilitario.gps.trasversal.CodigosPermiso;
+import com.example.utilitario.gps.trasversal.ConstantesExtras;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == ConstanteIntent.CODIGO_INTENT_PERMISOS_APLICACION) {
+        if (requestCode == CodigosPermiso.PERMISOS_APLICACION) {
             boolean permisosGarantizados = true;
 
             for (int validacion : grantResults)
@@ -66,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, getResources().getStringArray(R.array.permisos_aplicacion), ConstanteIntent.CODIGO_INTENT_PERMISOS_APLICACION);
+            ActivityCompat.requestPermissions(this, getResources().getStringArray(R.array.permisos_aplicacion), CodigosPermiso.PERMISOS_APLICACION);
         } else {
             //iniciar Programa;
-            BroadcastReceiverDeReinicio.programarTrabajo(getApplicationContext());
+            RestartBroadcastReceiver.programarTrabajo(getApplicationContext());
         }
     }
     //endregion
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ConstantesAccion.ACCION_INTENT)) {
-                final String param = intent.getStringExtra(ConstanteExtras.EXTRA_LOCALIZACION);
+                final String param = intent.getStringExtra(ConstantesExtras.EXTRA_LOCALIZACION);
 
                 tv_kilometraje.setText(String.format("%s km/h", param));
             }

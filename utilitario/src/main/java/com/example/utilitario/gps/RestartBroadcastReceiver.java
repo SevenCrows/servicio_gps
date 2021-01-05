@@ -1,5 +1,6 @@
-package com.example.servicioreinicio;
+package com.example.utilitario.gps;
 
+import android.annotation.SuppressLint;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
@@ -13,17 +14,15 @@ import androidx.annotation.RequiresApi;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
-public class BroadcastReceiverDeReinicio extends BroadcastReceiver {
+public class RestartBroadcastReceiver extends BroadcastReceiver {
     //region Atributos
-    private static final String TAG = "BroadcastReceiverDeReinicio";
     private static JobScheduler jobScheduler;
-    private BroadcastReceiverDeReinicio broadcastReceiverDeReinicio;
     //endregion
 
     //region Sobrecargas
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(BroadcastReceiverDeReinicio.class.getSimpleName(), "Service se detuvo pero, se reiniciara....");
+        Log.i(RestartBroadcastReceiver.class.getSimpleName(), "Service se detuvo pero, se reiniciara....");
         programarTrabajo(context);
     }
 

@@ -1,10 +1,9 @@
-package com.example.servicioreinicio;
+package com.example.utilitario.gps;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -23,8 +22,9 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.example.servicioreinicio.trasversal.ConstanteExtras;
-import com.example.servicioreinicio.trasversal.ConstantesAccion;
+import com.example.utilitario.R;
+import com.example.utilitario.gps.trasversal.ConstantesAccion;
+import com.example.utilitario.gps.trasversal.ConstantesExtras;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,13 +37,12 @@ import java.util.Date;
 public class ServicioGPS extends Service implements LocationListener {
 
     //region Atributos
-    private static final String TAG = "ServicioGPS";
     private Location locacion_actual, locacion_previa;
     //endregion
 
     //region Constructor
     public ServicioGPS(Context context) {
-        Log.i(TAG, " --> Servicio en Constructor");
+        Log.i(ServicioGPS.class.getSimpleName(), " --> Servicio en Constructor");
     }
 
     public ServicioGPS() {
@@ -92,8 +91,8 @@ public class ServicioGPS extends Service implements LocationListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, " --> Servicio se Destruye");
-        Intent broadcastIntent = new Intent(this, BroadcastReceiverDeReinicio.class);
+        Log.i(ServicioGPS.class.getSimpleName(), " --> Servicio se Destruye");
+        Intent broadcastIntent = new Intent(this, RestartBroadcastReceiver.class);
         sendBroadcast(broadcastIntent);
     }
 
@@ -115,12 +114,7 @@ public class ServicioGPS extends Service implements LocationListener {
         final Handler handler = new Handler();
         final Runnable r = new Runnable() {
             public void run() {
-                if (locacion_actual != null && locacion_previa != null) {
-                    if (locacion_previa.distanceTo(locacion_actual) >= 50) {
-                        locacion_previa = locacion_actual;
-                        crearArchivoVelocidad(locacion_actual);
-                    }
-                }
+                actualizarLocalizacionPrevia();
                 handler.postDelayed(this, 15000); //Cada segundo.
             }
         };
@@ -164,13 +158,21 @@ public class ServicioGPS extends Service implements LocationListener {
             Toast.makeText(this.getApplication(), "Error al modificar archivo: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void actualizarLocalizacionPrevia() {
+        if (locacion_actual != null && locacion_previa != null) {
+            if (locacion_previa.distanceTo(locacion_actual) >= 50) {
+                locacion_previa = locacion_actual;
+                crearArchivoVelocidad(locacion_actual);
+            }
+        }
+    }
     //endregion
 
     //region Contrato
-
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        Log.i(TAG, " L --> " + location.toString());
+        Log.i(ServicioGPS.class.getSimpleName(), " L --> " + location.toString());
         float velocidadKmH = (location.getSpeed()) * 3.6f;
 
         if (locacion_previa == null) {
@@ -178,18 +180,13 @@ public class ServicioGPS extends Service implements LocationListener {
             crearArchivoVelocidad(location);
         }
 
-        if (locacion_actual != null && locacion_previa != null) {
-            if (locacion_previa.distanceTo(locacion_actual) >= 50) {
-                locacion_previa = locacion_actual;
-                crearArchivoVelocidad(locacion_actual);
-            }
-        }
+        actualizarLocalizacionPrevia();
 
         locacion_actual = location;
         if (velocidadKmH >= 50) crearArchivoVelocidad(location);
 
         Intent intent = new Intent(ConstantesAccion.ACCION_INTENT);
-        intent.putExtra(ConstanteExtras.EXTRA_LOCALIZACION, String.valueOf(velocidadKmH));
+        intent.putExtra(ConstantesExtras.EXTRA_LOCALIZACION, String.valueOf(velocidadKmH));
         LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
         bm.sendBroadcast(intent);
     }
@@ -205,3 +202,4 @@ public class ServicioGPS extends Service implements LocationListener {
     }
     //endregion
 }
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.utilitario">
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <application>
+        <service android:name=".gps.ServicioTrabajo"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service android:name=".gps.ServicioGPS"
+            android:enabled="true" />
+
+        <receiver
+            android:name=".gps.RestartBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RestartServiceWhenStopped">
+        </receiver>
+    </application></manifest>

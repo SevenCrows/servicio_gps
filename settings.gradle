@@ -1,2 +1,3 @@
+include ':utilitario'
 include ':app'
 rootProject.name = "ServicioReinicio"
