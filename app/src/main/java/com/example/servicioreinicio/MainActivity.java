@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, getResources().getStringArray(R.array.permisos_aplicacion), CodigosPermiso.PERMISOS_APLICACION);
         } else {
-            //iniciar Programa;
+            //iniciar Programa
             RestartBroadcastReceiver.programarTrabajo(getApplicationContext());
 
         }
